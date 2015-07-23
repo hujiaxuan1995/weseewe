@@ -36,38 +36,39 @@ function weblock(object){
 	this.s = this.height;//方块距离底部的高度
 	this.finish = 0; //1表示运动，0表示静止
 	this.weseewe.style.bottom = queue.getIndex(5).height+"px";
-	this.jump = function(){
+	this.jump = function(height,s){
 		var t = 0;
 		var v = 50;
 		var a = 12.5;
 		var s = 0;
-		var height = this.height;
 		this.finish = 1;
-		 id=setInterval(function(){
+		 id=setInterval(function(finish){
 			var temp = a*t*t;
 			var h = v*t - temp;
 			s = height + h;
-			this.s = s;
-			this.weseewe.style.bottom = this.s +"px";
+			this.weseewe.style.bottom = s +"px";
 			t = t+0.02;
-			if((this.s - this.height)<1){
+			console.log(s-height);
+			if((s - height) <0.5 && t>1){
 				clearInterval(id);
-				this.finish = 0;
+				finish = 0;
 			}
-		},1);
+		}(this.finish),1);
 	};
 	this.jump_again = function(){
 		clearInterval(id);
+		var height = this.height;
+		var y = this.s - this.height;//跳起的高度
 		id = setInterval(function(){
 			var t = 0;
 			var v = 50;
 			var a = 12.5;
 			var s = 0;
-			var y = this.s - this.height;//跳起的高度
+			console.log(y);
 			var temp = a*t*t;
-			var h = v*t - temp + ;
-			this.s = h;
-			s = height + h;
+			var h = v*t - temp + y;
+			s = this.height + h;
+			this.s = s;
 			this.weseewe.style.bottom = this.s +"px";
 			console.log(h);
 			t = t+0.02;
@@ -111,14 +112,16 @@ function init(){
 				if(we.finish == 1){
 					var date = new Date();
 					last_time = date.getTime();
-					if(last_time - first_time < 2){
+					console.log((last_time - first_time));
+					if((last_time - first_time) < 2){
+						alert("again");
 						we.jump_again();
 					}
 				}
 				if(we.finish == 0){
 					var date = new Date();
 					first_time = date.getTime();
-					we.jump();
+					we.jump(we.height,we.s);
 				}
 				break;
 			default:break;
