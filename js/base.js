@@ -29,11 +29,12 @@ function Queue(){
 	};
 }
 function weblock(object){
-	this.height = 0;
 	this.right = 0;
 	this.weseewe = object;
 	var id;
-	this.height = queue.getIndex(5).height;
+	this.height = queue.getIndex(5).height; //所在格子的高度
+	this.s = this.height;//方块距离底部的高度
+	this.finish = 0; //1表示运动，0表示静止
 	this.weseewe.style.bottom = queue.getIndex(5).height+"px";
 	this.jump = function(){
 		var t = 0;
@@ -41,20 +42,40 @@ function weblock(object){
 		var a = 12.5;
 		var s = 0;
 		var height = this.height;
+		this.finish = 1;
 		 id=setInterval(function(){
 			var temp = a*t*t;
 			var h = v*t - temp;
 			s = height + h;
-			this.weseewe.style.bottom = s +"px";
-			console.log(height);
+			this.s = s;
+			this.weseewe.style.bottom = this.s +"px";
 			t = t+0.02;
-			if(t > 4){
+			if((this.s - this.height)<1){
 				clearInterval(id);
+				this.finish = 0;
 			}
 		},1);
 	};
 	this.jump_again = function(){
-
+		clearInterval(id);
+		id = setInterval(function(){
+			var t = 0;
+			var v = 50;
+			var a = 12.5;
+			var s = 0;
+			var y = this.s - this.height;//跳起的高度
+			var temp = a*t*t;
+			var h = v*t - temp + ;
+			this.s = h;
+			s = height + h;
+			this.weseewe.style.bottom = this.s +"px";
+			console.log(h);
+			t = t+0.02;
+			if((this.s - this.height)<1){
+				clearInterval(id);
+				this.finish = 0;
+			}
+		},1);
 	};
 }
 function init(){
@@ -87,22 +108,18 @@ function init(){
 			}
 			break;
 			case(32) :
-				
-				if(flag2 == 1){
+				if(we.finish == 1){
 					var date = new Date();
 					last_time = date.getTime();
 					if(last_time - first_time < 2){
 						we.jump_again();
 					}
-					flag2 = 0;	
 				}
-				if(flag2 == 0){
-					flag2 = 1;
+				if(we.finish == 0){
 					var date = new Date();
 					first_time = date.getTime();
 					we.jump();
 				}
-				
 				break;
 			default:break;
 		};
